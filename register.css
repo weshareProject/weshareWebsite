@@ -31,7 +31,7 @@ body {
     box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     padding: 20px;
-    width: 300px;
+    width: 400px; /* 调整注册容器的宽度 */
 }
 
 h2 {
@@ -49,29 +49,33 @@ form {
 label {
     font-weight: bold;
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 10px; /* 增加标签的底部间距 */
     color: #333;
 }
 
 input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #d1d5da; /* 输入框边框颜色 */
+    display: block;
+    width:300px;
+    padding: 12px; /* 增加输入框的内边距 */
+    border: 1px solid #d1d5da;
     border-radius: 6px;
+    margin-bottom: 10px; 
 }
 
 button {
-    background-color: #28a745; /* 绿色按钮背景颜色 */
+    background-color: #28a745;
     color: #fff;
-    padding: 10px;
-    border: none;
+    padding: 12px;
+    border: 1px solid #28a745;
     border-radius: 6px;
     cursor: pointer;
     font-size: 16px;
+    margin-top: 10px; /* 增加按钮的顶部间距 */
 }
 
 button:hover {
-    background-color: #1a9e49; /* 鼠标悬停时的按钮颜色 */
+    background-color: #1a9e49;  /* 鼠标悬停时的按钮颜色 */
+    border-color: #1a9e49;
 }
 
 button:focus {
