@@ -1,15 +1,20 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const registerButton = document.getElementById("register-button");
-    registerButton.addEventListener("click", async function(event) {
-        event.preventDefault();
 
-        // 获取用户名、电子邮件和密码等输入的值
+    registerButton.addEventListener("click", async function (event) {
+        event.preventDefault();
+        //获取详细的数据
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+
+        if (password !== confirmPassword) {
+            alert("密码不匹配");
+            return; // 阻止继续执行
+        }
 
         // 创建一个包含用户信息的JavaScript对象
-        // 后续补充
         const userData = {
             username: username,
             email: email,

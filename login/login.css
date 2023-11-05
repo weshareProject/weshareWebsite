@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5; /* 背景页的背景颜色 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.background-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.plugin-name {
+    font-size: 40px;
+    color: #28a745; /* 插件名称的文本颜色 */
+}
+
+.description {
+    font-size: 18px;
+    color: #666; /* 插件描述的文本颜色 */
+}
+
+.container {
+    background-color: #fff; /* 注册容器的背景颜色 */
+    border: 1px solid #e1e4e8; /* 边框线 */
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    width: 400px; /* 调整注册容器的宽度 */
+}
+
+h2 {
+    color: #333;
+    font-size: 24px;
+    margin-top: 20px; /* 增加标题与插件信息的间距 */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 10px; /* 增加标签的底部间距 */
+    color: #333;
+}
+
+input {
+    display: block;
+    width:300px;
+    padding: 12px; /* 增加输入框的内边距 */
+    border: 1px solid #d1d5da;
+    border-radius: 6px;
+    margin-bottom: 10px; 
+}
+
+button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 12px;
+    border: 1px solid #28a745;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px; /* 增加按钮的顶部间距 */
+}
+
+button:hover {
+    background-color: #1a9e49;  /* 鼠标悬停时的按钮颜色 */
+    border-color: #1a9e49;
+}
+
+button:focus {
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    color: #1a9e49; /* 添加一个链接颜色 */
+}
+
+a:hover {
+    text-decoration: underline; /* 链接悬停时添加下划线 */
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weshare - 登录</title>
+    <link rel="stylesheet" type="text/css" href="login.css">
+</head>
+<body>
+    <div class="background-container">
+        <h1 class="plugin-name">weshare</h1>
+        <p class="description">欢迎使用 weshare 插件,让网页留下属于你的足迹。</p>
+    </div>
+    <div class="container">
+        <h2>登录</h2>
+        <form method="post" action="" id="login-form">
+            <label for="usernameOrEmail">
+                <input type="text" 
+                id="usernameOrEmail" 
+                placeholder="用户名或邮箱:"  
+                required>
+            </label>
+            <label for="password">
+                <input type="password" 
+                id="password" 
+                placeholder="密码:" 
+                required>
+            </label>
+            <button id="login-button" type="submit">登录</button>
+        </form>
+        <p>还没有账号？<a href="../register/register.html">注册</a></p>
+    </div>
+    <script src="login.js"></script>
+</body>
+</html>
