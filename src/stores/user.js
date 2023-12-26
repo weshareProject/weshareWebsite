@@ -28,7 +28,10 @@ export const useUserStore = defineStore('user', () => {
     // 删除 cookie 中的 token 令牌
     removeToken()
     // 删除登录用户信息
-    userInfo.value = {}
+    userInfo.username = ''
+    userInfo.email = ''
+    userInfo.icon = ''
+    userInfo.nickname = ''
   }
 
   return {userInfo, logout,setUsername,setNickname,setEmail,setIcon}

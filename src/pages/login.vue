@@ -13,7 +13,7 @@
         </div>
         <div class="col-span-2 order-1 md:col-span-1 md:order-2 bg-white">
             <!-- flex-col 用于指定子元素垂直排列 -->
-            <div class="flex justify-center items-center h-full flex-col ">
+            <div class="flex justify-center items-center h-full flex-col">
                 <!-- 大标题，设置字体粗细、大小、下边距 -->
                 <h1 class="font-bold text-4xl mb-5">欢迎回来</h1>
                 <!-- 设置 flex 布局，内容垂直水平居中，文字颜色，以及子内容水平方向 x 轴间距 -->
@@ -37,10 +37,10 @@
                     </el-form-item>
                     <el-form-item>
                         <!-- 登录按钮 -->
-                        <el-button  size="large" class="mt-2"  :loading="loading" type="primary"
+                        <el-button size="large" class="mt-2" :loading="loading" type="primary"
                             @click="onSubmit">登录</el-button>
                         <!-- 注册按钮 -->
-                        <el-button  size="large"  class="mt-2" :loading="loading"  @click="goToRegister">注册</el-button>
+                        <el-button size="large" class="mt-2" :loading="loading" @click="goToRegister">注册</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -157,5 +157,14 @@ onBeforeUnmount(() => {
     document.removeEventListener('keyup', onKeyUp)
 })
 
-
+window.addEventListener('message', (message) => {
+    console.log(message)
+    let data = JSON.parse(message.data);
+    console.log(data)
+    if (data.token && data.userName) {
+        setToken(data.token)
+        userStore.setUsername(data.userName)
+        router.push({ path: '/admin' })
+    }
+}, false)
 </script>

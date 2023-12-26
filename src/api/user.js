@@ -13,6 +13,14 @@ export function login(data) {
       })
 }
 
+// 登出接口
+// export function logout(){
+//   return axios({
+//     method : 'POST',
+//     url :'/user/logout',
+//   })
+// }
+
 // 修改用户密码
 // data = {
 //   username,

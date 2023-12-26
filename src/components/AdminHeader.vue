@@ -226,17 +226,13 @@ const onSubmit = () => {
         };
         // 调用修改用户密码接口
         updatePassword(data).then((res) => {
-            console.log(res)
-            console.log(data)
             // 判断是否成功
-            if (res.success == true) {
+            if (res.code === 200 || res.code === 201) {
                 showMessage('密码重置成功，请重新登录！')
                 // 退出登录
                 userStore.logout()
-
                 // 隐藏对话框
                 openPswd.value = false
-
                 // 跳转登录页
                 router.push('/login')
             } else {

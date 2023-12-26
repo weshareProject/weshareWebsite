@@ -2,7 +2,6 @@
 import axios from "axios";
 import { getToken } from "@/utils/cookie"
 import { showMessage} from '@/utils/message'
-import {TOKEN_KEY}  from "@/utils/cookie"
 // 创建 Axios 实例
 const instance = axios.create({
     baseURL:"api",  // 你的 API 基础 URL
@@ -11,14 +10,15 @@ const instance = axios.create({
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
+    const  header = 'Authorization' 
     config.headers['Content-Type'] = 'application/json'
     // 在发送请求之前做些什么
     const token = getToken()
     console.log('统一添加请求头中的 Token:' + token)
     // 当 token 不为空时
     if (token) {
-        // 添加请求头, key 为 TOKEN_KEY，value 值的前缀为 'Bearer '
-        config.headers[TOKEN_KEY] = 'Bearer ' + token
+        // 添加头部
+        config.headers[header] = 'Bearer ' + token
     }
 
     return config;
