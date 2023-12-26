@@ -87,6 +87,7 @@ import { useRouter } from 'vue-router'
 import { showModel, showMessage } from '@/utils/message'
 import { onMounted, ref, reactive, watch } from 'vue'
 import { updatePassword } from '@/api/user'
+import {isValidPassword,isValidUsername} from '@/utils/validRules' 
 import {
     initAccordions //用于初始化手风琴组件。
     , initCollapses//用于初始化折叠（collapse）组件。
@@ -184,20 +185,10 @@ const validate_password = (rule,value,callback) =>{
     else callback()
 }
 
-// 校验验证码
-const validate_code = (rule,value,callback) =>{
-    let isvalid = isValidCode(value)
-    if(value === ''){
-        callback(new Error("请输入验证码"));
-    }
-    else if(!isvalid){
-        callback(new Error("验证码要求是6位纯数字"))
-    }
-    else callback()
-}
+
 // 校验确认密码 
 const validate_repassword = (rule,value,callback) =>{
-    const passwordValue = form.password
+    const passwordValue = form.newPassword
     let isvalid = isValidPassword(value)
     if(value === ''){
         callback(new Error("请再次输入密码"));
@@ -227,12 +218,6 @@ const onSubmit = () => {
             console.log('表单验证不通过')
             return false
         }
-
-        if (form.newPassword != form.reNewPassword) {
-            showMessage('两次新密码输入不一致，请检查！', 'warning')
-            return
-        }
-
         showBtnLoading()
         const data = {
             username: form.username,

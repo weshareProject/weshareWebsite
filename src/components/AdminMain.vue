@@ -22,7 +22,8 @@ onMounted(() => {
                 // 获取服务端返回的错误消息
                 let message = res.message
                 // 提示消息
-                showMessage(message, 'error')
+                // showMessage(message, 'error')
+                console.log(message)
             }
         })
 })
