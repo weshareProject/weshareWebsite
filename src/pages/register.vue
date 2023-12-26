@@ -79,9 +79,14 @@ import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { showMessage } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
+import {isValidCode,isValidPassword,isValidUsername,isValidEmail} from '@/utils/validRules' 
 
 // 用户信息的仓库
 const userStore = useUserStore()
+// 启用路由
+const router = useRouter()
+
+
 // 定义响应式的表单对象
 const form = reactive({
     username: '',
@@ -91,56 +96,80 @@ const form = reactive({
     validCode: ''
 })
 
-// const statusMsg = ref("statusTEST")
-const router = useRouter()
 // 登录按钮加载
 const loading = ref(false)
-
 // 表单引用
 const formRef = ref(null)
+
+// 校验用户名
+const validate_username = (rule,value,callback) =>{
+    let isvalid = isValidUsername(value)
+    if(value === ''){
+        callback(new Error("请输入用户名"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~20 的用户名，可以包含字母、数字、下划线和连字符"))
+    }
+    else callback()
+}
+
+// 校验密码
+const validate_password = (rule,value,callback) =>{
+    let isvalid = isValidPassword(value)
+    if(value === ''){
+        callback(new Error("请输入密码"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
+    }
+    else callback()
+}
+
+// 校验验证码
+const validate_code = (rule,value,callback) =>{
+    let isvalid = isValidCode(value)
+    if(value === ''){
+        callback(new Error("请输入验证码"));
+    }
+    else if(!isvalid){
+        callback(new Error("验证码要求是6位纯数字"))
+    }
+    else callback()
+}
+// 校验确认密码 
+const validate_repassword = (rule,value,callback) =>{
+    const passwordValue = form.password
+    let isvalid = isValidPassword(value)
+    if(value === ''){
+        callback(new Error("请再次输入密码"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
+    }
+    else if(passwordValue && passwordValue !== value){
+        callback(new Error("两次密码不一致"))
+    }
+    else callback()
+}
+// 校验邮箱
+const validate_email = (rule,value,callback) =>{
+    let isvalid = isValidEmail(value)
+    if(value === ''){
+        callback(new Error("请输入邮箱"));
+    }
+    else if(!isvalid){
+        callback(new Error("邮箱不规范"))
+    }
+    else callback()
+}
+
 // 表单验证规则
 const rules = {
-    username: [
-        {
-            required: true,
-            message: '用户名不能为空',
-            trigger: 'blur'
-        }
-    ],
-    email: [
-        {
-            required: true,
-            message: '邮箱不能为空',
-            trigger: 'blur'
-        },
-        {
-            type: 'email',
-            message: '请输入正确的邮箱地址',
-            trigger: ['blur', 'change']
-        }
-    ],
-    password: [
-        {
-            required: true,
-            message: '密码不能为空',
-            trigger: 'blur',
-        },
-    ],
-    rePassword: [
-        {
-            required: true,
-            message: '密码不能为空',
-            trigger: 'blur',
-        },
-    ],
-    validCode: [
-        {
-            required: true,
-            message: '验证码不能为空',
-            trigger: 'blur',
-        },
-    ],
-
+    username: [{validator: validate_username,trigger: 'change'}],
+    email: [{validator: validate_email,trigger: 'change'}],
+    password: [{validator: validate_password,trigger: 'change'}],
+    rePassword: [{validator: validate_repassword,trigger: 'change'}],
+    validCode: [{validator: validate_code,trigger: 'change'}]
 }
 
 const countdown = ref(60); // 初始化倒计时秒数为60
@@ -179,6 +208,7 @@ const startCountdown = () => {
         }
     }, 1000);
 };
+
 const onRegister = () => {
     console.log('注册')
     // 先验证 form 表单字段
@@ -234,17 +264,16 @@ const onCancle = () => {
     router.push({ path: '/login' })
 }
 
+
+
 // 按回车键后，执行登录事件
 function onKeyUp(e) {
-    console.log(e)
     if (e.key == 'Enter') {
         onRegister()
     }
 }
-
 // 添加键盘监听
 onMounted(() => {
-    console.log('添加键盘监听')
     document.addEventListener('keyup', onKeyUp)
 })
 
