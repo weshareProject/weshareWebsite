@@ -179,8 +179,6 @@ let timer; // 计时器变量
 const onGetCode = () => {
     formRef.value.validateField('email', (valid) => {
         if (valid) {
-            // 邮箱验证通过，调用接口获取验证码
-            const encodedEmail = encodeURIComponent(form.email);
             getCode(form.email)
                 .then((res) => {
                     if (res.code === 200 || res.code === 201) {
@@ -214,13 +212,8 @@ const onRegister = () => {
     // 先验证 form 表单字段
     formRef.value.validate((valid) => {
         if (!valid) {
-            console.log('表单验证不通过')
-            showMessage('未填写完整', 'error')
+            showMessage('表单验证不通过', 'error')
             return false
-        }
-        if (form.password != form.rePassword) {
-            showMessage('两次新密码输入不一致，请检查！', 'warning')
-            return
         }
         // 开始加载
         loading.value = true

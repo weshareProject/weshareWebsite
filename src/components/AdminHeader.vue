@@ -87,8 +87,6 @@ import { useRouter } from 'vue-router'
 import { showModel, showMessage } from '@/utils/message'
 import { onMounted, ref, reactive, watch } from 'vue'
 import { updatePassword } from '@/api/user'
-// 一开始想要引入这个封装的组件，但是总是报错，索性不要了
-// import FormDialog from '@/components/Headers/FormDialog.vue'
 import {
     initAccordions //用于初始化手风琴组件。
     , initCollapses//用于初始化折叠（collapse）组件。
@@ -107,22 +105,6 @@ import {
 // 引入了用户 Store
 const userStore = useUserStore()
 const router = useRouter()
-
-// // 引入组件的
-// // 对话框是否显示
-// const formDialogRef = ref(false)
-
-// // 下拉菜单事件处理
-// const handleCommand = (command) => {
-//     // 更新密码
-//     if (command == 'updatePassword') {
-//         // 显示修改密码对话框
-//         formDialogRef.value.open()
-//     } else if (command == 'logout') { // 退出登录
-//         logout()
-//     }
-// }
-
 
 // 对话框是否显示
 const openPswd = ref(false)
@@ -177,36 +159,65 @@ watch(() => userStore.userInfo.username, (newValue, oldValue) => {
     form.username = newValue
 });
 
-// 规则校验
+
+// 校验用户名
+const validate_username = (rule,value,callback) =>{
+    let isvalid = isValidUsername(value)
+    if(value === ''){
+        callback(new Error("请输入用户名"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~20 的用户名，可以包含字母、数字、下划线和连字符"))
+    }
+    else callback()
+}
+
+// 校验密码
+const validate_password = (rule,value,callback) =>{
+    let isvalid = isValidPassword(value)
+    if(value === ''){
+        callback(new Error("请输入密码"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
+    }
+    else callback()
+}
+
+// 校验验证码
+const validate_code = (rule,value,callback) =>{
+    let isvalid = isValidCode(value)
+    if(value === ''){
+        callback(new Error("请输入验证码"));
+    }
+    else if(!isvalid){
+        callback(new Error("验证码要求是6位纯数字"))
+    }
+    else callback()
+}
+// 校验确认密码 
+const validate_repassword = (rule,value,callback) =>{
+    const passwordValue = form.password
+    let isvalid = isValidPassword(value)
+    if(value === ''){
+        callback(new Error("请再次输入密码"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
+    }
+    else if(passwordValue && passwordValue !== value){
+        callback(new Error("两次密码不一致"))
+    }
+    else callback()
+}
+
+
+// 表单验证规则
 const rules = {
-    username: [
-        {
-            required: true,
-            message: '用户名不能为空',
-            trigger: 'blur'
-        }
-    ],
-    oldPassword: [
-        {
-            required: true,
-            message: '原密码不能为空',
-            trigger: 'blur',
-        },
-    ],
-    newPassword: [
-        {
-            required: true,
-            message: '新密码不能为空',
-            trigger: 'blur',
-        },
-    ],
-    reNewPassword: [
-        {
-            required: true,
-            message: '确认新密码不能为空',
-            trigger: 'blur',
-        },
-    ]
+    username: [{validator: validate_username,trigger: 'change'}],
+    oldPassword: [{validator: validate_password,trigger: 'change'}],
+    newPassword: [{validator: validate_password,trigger: 'change'}],
+    reNewPassword: [{validator: validate_repassword,trigger: 'change'}]
 }
 
 const onSubmit = () => {
