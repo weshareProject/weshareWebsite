@@ -60,11 +60,5 @@ export function getCode(email) {
   });
 }
 
-// 获取用户笔记
-export function getAllNotes(){
-  return axios({
-    method: 'GET',
-    url : '/note/user'
-  })
-}
+
 
