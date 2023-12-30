@@ -61,4 +61,31 @@ export function getCode(email) {
 }
 
 
+// 修改用户昵称
+// data = {
+//   username,
+//   nickName
+// }
+export function updateNickname(data){
+  return axios({
+    method: 'PUT',
+    url: '/user/nickname',
+    data
+  })
+}
+
+// 修改用户头像
+// data = {
+//   username,
+//   icon
+// }
+export function updateIcon(data){
+  return axios({
+    method: 'PUT',
+    url: '/user/icon',
+    data
+  })
+}
+
+
 

@@ -121,7 +121,6 @@ const onSubmit = () => {
 
                 // 获取用户信息(名字)，并存储到全局状态中
                 userStore.setUsername(form.username)
-
                 // 跳转到后台首页
                 router.push({ path: '/admin' })
             } else {

@@ -31,6 +31,11 @@
                         <el-input size="large" v-model="form.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
                     </el-form-item>
 
+                    <el-form-item prop="nickName">
+                        <!-- 输入框组件 -->
+                        <el-input size="large" v-model="form.nickName" placeholder="请输入昵称" :prefix-icon="User" clearable />
+                    </el-form-item>
+
                     <el-form-item prop="password">
                         <!-- 密码框组件 -->
                         <el-input size="large" type="password" v-model="form.password" placeholder="请输入密码"
@@ -79,7 +84,7 @@ import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { showMessage } from '@/utils/message'
 import { useUserStore } from '@/stores/user'
-import {isValidCode,isValidPassword,isValidUsername,isValidEmail} from '@/utils/validRules' 
+import {isValidCode,isValidPassword,isValidUsername,isValidEmail,isValidNickname} from '@/utils/validRules' 
 
 // 用户信息的仓库
 const userStore = useUserStore()
@@ -93,7 +98,8 @@ const form = reactive({
     email: '',
     password: '',
     rePassword:'',
-    validCode: ''
+    validCode: '',
+    nickName: ''
 })
 
 // 登录按钮加载
@@ -109,6 +115,18 @@ const validate_username = (rule,value,callback) =>{
     }
     else if(!isvalid){
         callback(new Error("请输入长度 3~20 的用户名，可以包含字母、数字、下划线和连字符"))
+    }
+    else callback()
+}
+
+// 校验昵称
+const validate_nickname = (rule,value,callback) =>{
+    let isvalid = isValidNickname(value)
+    if(value === ''){
+        callback(new Error("请输入昵称"));
+    }
+    else if(!isvalid){
+        callback(new Error("请输入长度 3~20 的昵称，可以包含字母、数字、下划线和连字符"))
     }
     else callback()
 }
@@ -166,6 +184,7 @@ const validate_email = (rule,value,callback) =>{
 // 表单验证规则
 const rules = {
     username: [{validator: validate_username,trigger: 'change'}],
+    nickName: [{validator: validate_nickname,trigger: 'change'}],
     email: [{validator: validate_email,trigger: 'change'}],
     password: [{validator: validate_password,trigger: 'change'}],
     rePassword: [{validator: validate_repassword,trigger: 'change'}],
@@ -220,6 +239,7 @@ const onRegister = () => {
         const registerData = {
             username: form.username,
             email: form.email,
+            nickName: form.nickName,
             password: form.password,
             validCode: form.validCode
         };
@@ -235,6 +255,7 @@ const onRegister = () => {
                 // 获取用户信息(名字)，并存储到全局状态中
                 userStore.setUsername(form.username)
                 userStore.setEmail(form.email)
+                userStore.setNickname(form.nickName)
 
                 // 跳转到登录页
                 router.push({ path: '/login' })

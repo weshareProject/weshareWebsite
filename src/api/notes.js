@@ -22,7 +22,7 @@ export function editNote(data){
   })
 }
 
-
+//删除笔记内容
 export function deleteNote(tempId) {
   return axios({
     method: 'DELETE',

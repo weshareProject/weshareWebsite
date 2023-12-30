@@ -25,8 +25,8 @@
                         <!-- 登录用户头像 -->
                         <el-dropdown class="flex items-center justify-center" @command="handleCommand">
                             <span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
-                                <!-- 头像 Avatar -->
-                                <el-avatar class="mr-2" :size="25"
+                                <!-- 头像 Icon -->
+                                <el-Icon class="mr-2" :size="25"
                                     src="https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg" />
                                 {{ userStore.userInfo.username }}
                                 <el-icon class="el-icon--right">
@@ -35,9 +35,18 @@
                             </span>
                             <template #dropdown>
                                 <el-dropdown-menu>
-                                    <el-dropdown-item command="updateUserInfo"><el-icon><UserFilled /></el-icon>修改其他信息</el-dropdown-item>
-                                    <el-dropdown-item command="updatePassword"><el-icon><Unlock /></el-icon>修改密码</el-dropdown-item>
-                                    <el-dropdown-item command="logout"><el-icon><Back /></el-icon>退出登录</el-dropdown-item>
+                                    <el-dropdown-item command="Nickname"><el-icon>
+                                            <UserFilled />
+                                        </el-icon> {{ userStore.userInfo.nickname }} </el-dropdown-item>
+                                    <el-dropdown-item command="updateNickname"><el-icon>
+                                            <UserFilled />
+                                        </el-icon>修改昵称</el-dropdown-item>
+                                    <el-dropdown-item command="updatePassword"><el-icon>
+                                            <Unlock />
+                                        </el-icon>修改密码</el-dropdown-item>
+                                    <el-dropdown-item command="logout"><el-icon>
+                                            <Back />
+                                        </el-icon>退出登录</el-dropdown-item>
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
@@ -48,36 +57,89 @@
         <!-- 修改密码 -->
         <el-dialog v-model="openPswd" title="修改密码" width="40%" :draggable="true" :close-on-click-modal="false"
             :close-on-press-escape="false">
-            <el-form ref="formRef" :rules="rules" :model="form">
+            <el-form ref="formRefPswd" :rules="rulesPswd" :model="formPswd">
                 <el-form-item label="用户名" prop="username" label-width="120px">
                     <!-- 输入框组件 -->
-                    <el-input size="large" v-model="form.username" placeholder="请输入用户名" clearable disabled />
+                    <el-input size="large" v-model="formPswd.username" placeholder="请输入用户名" clearable disabled />
                 </el-form-item>
 
                 <el-form-item label="原密码" prop="oldPassword" label-width="120px">
-                    <el-input size="large" type="password" v-model="form.oldPassword" placeholder="请输入原密码" clearable
+                    <el-input size="large" type="password" v-model="formPswd.oldPassword" placeholder="请输入原密码" clearable
                         show-password />
                 </el-form-item>
 
                 <el-form-item label="新密码" prop="newPassword" label-width="120px">
-                    <el-input size="large" type="password" v-model="form.newPassword" placeholder="请输入新密码" clearable
+                    <el-input size="large" type="password" v-model="formPswd.newPassword" placeholder="请输入新密码" clearable
                         show-password />
                 </el-form-item>
 
                 <el-form-item label="确认新密码" prop="reNewPassword" label-width="120px">
-                    <el-input size="large" type="password" v-model="form.reNewPassword" placeholder="请确认新密码" clearable
+                    <el-input size="large" type="password" v-model="formPswd.reNewPassword" placeholder="请确认新密码" clearable
                         show-password />
                 </el-form-item>
             </el-form>
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="openPswd = false">取消</el-button>
-                    <el-button type="primary" @click="onSubmit">
+                    <el-button type="primary" @click="onUpdatePswd">
                         提交
                     </el-button>
                 </span>
             </template>
         </el-dialog>
+
+        <!-- 修改昵称 -->
+        <el-dialog v-model="openNick" title="修改昵称" width="40%" :draggable="true" :close-on-click-modal="false"
+            :close-on-press-escape="false">
+            <el-form ref="formRefNick" :rules="rulesNick" :model="formNick">
+                <el-form-item label="用户名" prop="username" label-width="120px">
+                    <!-- 输入框组件 -->
+                    <el-input size="large" v-model="formNick.username" placeholder="请输入用户名" clearable disabled />
+                </el-form-item>
+
+                <el-form-item label="新昵称" prop="nickname" label-width="120px">
+                    <el-input size="large" v-model="formNick.nickname" placeholder="请输入新昵称" clearable />
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="openNick = false">取消</el-button>
+                    <el-button type="primary" @click="onUpdateNick">
+                        提交
+                    </el-button>
+                </span>
+            </template>
+        </el-dialog>
+
+        
+        <el-dialog v-model="openIcon" title="更改用户头像" width="40%" :draggable="true" :close-on-click-modal="false"
+            :close-on-press-escape="false">
+            <el-form ref="formRefIcon" :rules="rulesIcon" :model="formIcon">
+                <el-form-item label="当前头像" label-width="120px">
+                    <!-- 在这里显示当前用户头像 -->
+                    <img :src="currentUserIcon" alt="Current Icon" class="current-Icon" />
+                </el-form-item>
+
+                <el-form-item label="新头像" prop="Icon" label-width="120px">
+                    <!-- 上传头像的组件 -->
+                    <el-upload class="Icon-uploader" action="/upload-url" :show-file-list="false"
+                        :before-upload="beforeIconUpload" :on-success="handleIconSuccess" :on-error="handleIconError">
+                        <img v-if="formIcon.Icon" :src="formIcon.Icon" class="Icon">
+                        <i v-else class="el-icon-plus Icon-uploader-icon"></i>
+                    </el-upload>
+                    <span class="Icon-upload-text">点击上传</span>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="openIcon = false">取消</el-button>
+                    <el-button type="primary" @click="onUpdateIcon">
+                        提交
+                    </el-button>
+                </span>
+            </template>
+        </el-dialog>
+
     </nav>
 </template>
 
@@ -86,8 +148,8 @@ import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { showModel, showMessage } from '@/utils/message'
 import { onMounted, ref, reactive, watch } from 'vue'
-import { updatePassword } from '@/api/user'
-import {isValidPassword,isValidUsername} from '@/utils/validRules' 
+import { updatePassword, updateNickname } from '@/api/user'
+import { isValidPassword, isValidUsername, isValidNickname } from '@/utils/validRules'
 import {
     initAccordions //用于初始化手风琴组件。
     , initCollapses//用于初始化折叠（collapse）组件。
@@ -109,6 +171,7 @@ const router = useRouter()
 
 // 对话框是否显示
 const openPswd = ref(false)
+const openNick = ref(false)
 
 // 下拉菜单事件处理
 const handleCommand = (command) => {
@@ -116,7 +179,10 @@ const handleCommand = (command) => {
     if (command == 'updatePassword') {
         // 显示修改密码对话框
         openPswd.value = true
-    } else if (command == 'logout') { // 退出登录
+    } else if (command == 'updateNickname') {
+        openNick.value = true
+    }
+    else if (command == 'logout') { // 退出登录
         logout()
     }
 }
@@ -139,47 +205,59 @@ const showBtnLoading = () => btnLoading.value = true
 const closeBtnLoading = () => btnLoading.value = false
 
 // 表单引用
-const formRef = ref(null)
+const formRefPswd = ref(null)
+const formRefNick = ref(null)
 
 // 修改用户密码表单对象
-const form = reactive({
+const formPswd = reactive({
     username: userStore.userInfo.username || '',
     oldPassword: '',
     newPassword: '',
     reNewPassword: ''
 })
+// 修改密码表单对象
+const formNick = reactive({
+    username: userStore.userInfo.username || '',
+    nickname: '',
+})
 
 // 监听Pinia store中的某个值的变化
 watch(() => userStore.userInfo.username, (newValue, oldValue) => {
-    // 在这里处理变化后的值
-    console.log('新值:', newValue);
-    console.log('旧值:', oldValue);
-
-    // 可以在这里执行任何你需要的逻辑
     // 重新将新的值，设置会 form 对象中
-    form.username = newValue
+    formPswd.username = newValue
 });
 
-
 // 校验用户名
-const validate_username = (rule,value,callback) =>{
+const validate_username = (rule, value, callback) => {
     let isvalid = isValidUsername(value)
-    if(value === ''){
+    if (value === '') {
         callback(new Error("请输入用户名"));
     }
-    else if(!isvalid){
+    else if (!isvalid) {
         callback(new Error("请输入长度 3~20 的用户名，可以包含字母、数字、下划线和连字符"))
     }
     else callback()
 }
 
+// 校验昵称
+const validate_nickname = (rule, value, callback) => {
+    let isvalid = isValidNickname(value)
+    if (value === '') {
+        callback(new Error("请输入昵称"));
+    }
+    else if (!isvalid) {
+        callback(new Error("请输入长度 3~20 的昵称，可以包含字母、数字、下划线和连字符"))
+    }
+    else callback()
+}
+
 // 校验密码
-const validate_password = (rule,value,callback) =>{
+const validate_password = (rule, value, callback) => {
     let isvalid = isValidPassword(value)
-    if(value === ''){
+    if (value === '') {
         callback(new Error("请输入密码"));
     }
-    else if(!isvalid){
+    else if (!isvalid) {
         callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
     }
     else callback()
@@ -187,45 +265,51 @@ const validate_password = (rule,value,callback) =>{
 
 
 // 校验确认密码 
-const validate_repassword = (rule,value,callback) =>{
-    const passwordValue = form.newPassword
+const validate_repassword = (rule, value, callback) => {
+    const passwordValue = formPswd.newPassword
     let isvalid = isValidPassword(value)
-    if(value === ''){
+    if (value === '') {
         callback(new Error("请再次输入密码"));
     }
-    else if(!isvalid){
+    else if (!isvalid) {
         callback(new Error("请输入长度 3~15 的密码，可以包含字母、数字"))
     }
-    else if(passwordValue && passwordValue !== value){
+    else if (passwordValue && passwordValue !== value) {
         callback(new Error("两次密码不一致"))
     }
     else callback()
 }
 
 
-// 表单验证规则
-const rules = {
-    username: [{validator: validate_username,trigger: 'change'}],
-    oldPassword: [{validator: validate_password,trigger: 'change'}],
-    newPassword: [{validator: validate_password,trigger: 'change'}],
-    reNewPassword: [{validator: validate_repassword,trigger: 'change'}]
+// 修改密码表单验证规则
+const rulesPswd = {
+    username: [{ validator: validate_username, trigger: 'change' }],
+    oldPassword: [{ validator: validate_password, trigger: 'change' }],
+    newPassword: [{ validator: validate_password, trigger: 'change' }],
+    reNewPassword: [{ validator: validate_repassword, trigger: 'change' }]
 }
 
-const onSubmit = () => {
+// 修改昵称表单验证规则
+const rulesNick = {
+    username: [{ validator: validate_username, trigger: 'change' }],
+    nickname: [{ validator: validate_nickname, trigger: 'change' }]
+}
+
+const onUpdatePswd = () => {
     // 先验证 form 表单字段
-    formRef.value.validate((valid) => {
+    formRefPswd.value.validate((valid) => {
         if (!valid) {
             console.log('表单验证不通过')
             return false
         }
         showBtnLoading()
-        const data = {
-            username: form.username,
-            oldPassword: form.oldPassword,
-            newPassword: form.newPassword
+        const dataPswd = {
+            username: formPswd.username,
+            oldPassword: formPswd.oldPassword,
+            newPassword: formPswd.newPassword
         };
         // 调用修改用户密码接口
-        updatePassword(data).then((res) => {
+        updatePassword(dataPswd).then((res) => {
             // 判断是否成功
             if (res.code === 200 || res.code === 201) {
                 showMessage('密码重置成功，请重新登录！')
@@ -235,6 +319,37 @@ const onSubmit = () => {
                 openPswd.value = false
                 // 跳转登录页
                 router.push('/login')
+            } else {
+                // 获取服务端返回的错误消息
+                let message = res.message
+                // 提示消息
+                showMessage(message, 'error')
+            }
+        }).finally(() => closeBtnLoading())
+    })
+}
+
+
+const onUpdateNick = () => {
+    // 先验证 form 表单字段
+    formRefNick.value.validate((valid) => {
+        if (!valid) {
+            console.log('表单验证不通过')
+            return false
+        }
+        showBtnLoading()
+        const dataNick = {
+            username: formNick.username,
+            nickName: formNick.nickname
+        };
+        // 调用修改用户昵称接口
+        updateNickname(dataNick).then((res) => {
+            // 判断是否成功
+            if (res.code === 200 || res.code === 201) {
+                showMessage('昵称重置成功')
+                userStore.setNickname(formNick.nickname)
+                // 隐藏对话框
+                openNick.value = false
             } else {
                 // 获取服务端返回的错误消息
                 let message = res.message
