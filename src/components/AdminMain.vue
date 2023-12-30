@@ -1,9 +1,9 @@
 <template>
     <div class="p-4 sm:ml-80">
         <div v-if="selectedNote" class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-            <p class="text-lg font-bold mb-4">{{ selectedNote.title }}</p>
+            <p class="text-lg font-bold mb-4 text-green-600 ">{{ selectedNote.title }}</p>
             <!-- URL截断显示 -->
-            <p class="truncate mb-4">
+            <p class="truncate mb-4 ">
                 前往:
                 <a :href="selectedNote.url" target="_blank" rel="noopener noreferrer"
                     class="text-blue-500 hover:text-green-600 transition duration-300">
@@ -11,7 +11,7 @@
                 </a>
             </p>
             <div v-if="selectedNote.contents.length > 0" class="py-4">
-                <p class="mt-4 font-semibold text-lg ">笔记列表</p>
+                <p class="mt-4 font-semibold text-lg  text-green-600 ">笔记列表:</p>
                 <ul>
                     <li v-for="(content, index) in selectedNote.contents" :key="index"
                         class="py-2 border-b border-gray-400 relative">
