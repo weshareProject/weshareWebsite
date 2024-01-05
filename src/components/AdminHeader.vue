@@ -15,7 +15,7 @@
                         </svg>
                     </button>
                     <a href="/" class="flex ms-2 md:me-24">
-                        <img src="@\assets\icon.png" class="h-8 me-3" alt="FlowBite Logo" />
+                        <img src="@/assets/icon.png" class="h-8 me-3" alt="FlowBite Logo" />
                         <span
                             class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">weshare</span>
                     </a>
@@ -26,8 +26,7 @@
                         <el-dropdown class="flex items-center justify-center" @command="handleCommand">
                             <span class="el-dropdown-link flex items-center justify-center text-gray-700 text-xs">
                                 <!-- 头像 Icon -->
-                                <el-Icon class="mr-2" :size="25"
-                                    src="https://img.quanxiaoha.com/quanxiaoha/f97361c0429d4bb1bc276ab835843065.jpg" />
+                                <img src="@/assets/pokemon.jpg" class="h-8 me-3" alt="userIcon" />
                                 {{ userStore.userInfo.username }}
                                 <el-icon class="el-icon--right">
                                     <arrow-down />
@@ -37,9 +36,9 @@
                                 <el-dropdown-menu>
                                     <el-dropdown-item command="Nickname"><el-icon>
                                             <UserFilled />
-                                        </el-icon> {{ userStore.userInfo.nickname }} </el-dropdown-item>
+                                        </el-icon> 个人信息</el-dropdown-item>
                                     <el-dropdown-item command="updateNickname"><el-icon>
-                                            <UserFilled />
+                                            <EditPen />
                                         </el-icon>修改昵称</el-dropdown-item>
                                     <el-dropdown-item command="updatePassword"><el-icon>
                                             <Unlock />
@@ -55,8 +54,8 @@
             </div>
         </div>
         <!-- 修改密码 -->
-        <el-dialog v-model="openPswd" title="修改密码" width="40%" :draggable="true" :close-on-click-modal="false"
-            :close-on-press-escape="false">
+        <el-dialog v-model="openPswd" title="修改密码"  :width="dialogWidth" :draggable="true" :close-on-click-modal="false"
+            :close-on-press-escape="false" class="sm:w-full md:w-1/2 lg:w-2/5">
             <el-form ref="formRefPswd" :rules="rulesPswd" :model="formPswd">
                 <el-form-item label="用户名" prop="username" label-width="120px">
                     <!-- 输入框组件 -->
@@ -89,8 +88,8 @@
         </el-dialog>
 
         <!-- 修改昵称 -->
-        <el-dialog v-model="openNick" title="修改昵称" width="40%" :draggable="true" :close-on-click-modal="false"
-            :close-on-press-escape="false">
+        <el-dialog v-model="openNick" title="修改昵称" :width="dialogWidth" :draggable="true" :close-on-click-modal="false"
+            :close-on-press-escape="false" class="sm:w-full md:w-1/2 lg:w-2/5">
             <el-form ref="formRefNick" :rules="rulesNick" :model="formNick">
                 <el-form-item label="用户名" prop="username" label-width="120px">
                     <!-- 输入框组件 -->
@@ -111,17 +110,15 @@
             </template>
         </el-dialog>
 
-        
-        <el-dialog v-model="openIcon" title="更改用户头像" width="40%" :draggable="true" :close-on-click-modal="false"
-            :close-on-press-escape="false">
+        <!-- 更改头像组件 -->
+        <!-- <el-dialog v-model="openIcon" title="更改用户头像" :width="dialogWidth" :draggable="true" :close-on-click-modal="false"
+            :close-on-press-escape="false" class="sm:w-full md:w-1/2 lg:w-2/5" >
             <el-form ref="formRefIcon" :rules="rulesIcon" :model="formIcon">
                 <el-form-item label="当前头像" label-width="120px">
-                    <!-- 在这里显示当前用户头像 -->
                     <img :src="currentUserIcon" alt="Current Icon" class="current-Icon" />
                 </el-form-item>
 
                 <el-form-item label="新头像" prop="Icon" label-width="120px">
-                    <!-- 上传头像的组件 -->
                     <el-upload class="Icon-uploader" action="/upload-url" :show-file-list="false"
                         :before-upload="beforeIconUpload" :on-success="handleIconSuccess" :on-error="handleIconError">
                         <img v-if="formIcon.Icon" :src="formIcon.Icon" class="Icon">
@@ -138,7 +135,7 @@
                     </el-button>
                 </span>
             </template>
-        </el-dialog>
+        </el-dialog> -->
 
     </nav>
 </template>
@@ -173,6 +170,8 @@ const router = useRouter()
 const openPswd = ref(false)
 const openNick = ref(false)
 
+const dialogWidth = ref(0)
+dialogWidth.value = '80%'
 // 下拉菜单事件处理
 const handleCommand = (command) => {
     // 更新密码

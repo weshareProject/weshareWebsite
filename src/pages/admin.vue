@@ -54,21 +54,33 @@ onMounted(() => {
     });
 });
 
+// 在初始化时创建一个对象存储URL和标题的键值对
+// 以便自己调试
+const urlTitleMap = {};
+urlTitleMap['https://www.baidu.com/']  =  "百度一下"
+urlTitleMap["https://cloud.tencent.com/developer/article/2332615"]  = "【Vuejs】1814- Vue 可编辑表格：让数据编辑更舒适自如-腾讯云开发者社区-腾讯云"
+urlTitleMap["https://www.bilibili.com/"]  =  "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili"
+urlTitleMap["https://www.iconfont.cn/home/index?spm=a313x.7781069.1998910419.2"]  =  "iconfont-阿里巴巴矢量图标库"
 
-// 获取单个 URL 的标题
+// 在获取标题的函数中，检查是否已经有该 URL 对应的标题
 const getTitleFromURL = async (url) => {
+    if (urlTitleMap[url]) {
+        return urlTitleMap[url]; // 如果已经有标题，直接返回
+    }
     try {
         const response = await fetch(CORS_PROXY + url);
         if (response.ok) {
             const html = await response.text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
             const title = doc.querySelector('title').textContent;
+            // 存储获取到的标题到对象中
+            urlTitleMap[url] = title;
             return title;
         }
         throw new Error('Network response was not ok.');
     } catch (error) {
         console.error(`Error fetching title for ${url}:`, error);
-        return 'Untitled';
+        return url;
     }
 };
 
