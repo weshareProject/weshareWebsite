@@ -1,7 +1,7 @@
 <template>
-    <div class="p-4 sm:ml-80">
+    <div class="p-4 sm:ml-80 bg-white ">
         <div v-if="selectedNote" class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
-            <p class="text-lg font-bold mb-4 text-green-600 ">{{ selectedNote.title }}</p>
+            <p class="text-lg font-bold mb-4 text-gray-600 ">{{ selectedNote.title }}</p>
             <!-- URL截断显示 -->
             <p class="truncate mb-4 ">
                 前往:
@@ -11,7 +11,7 @@
                 </a>
             </p>
             <div v-if="selectedNote.contents.length > 0" class="py-4">
-                <p class="mt-4 font-semibold text-lg  text-green-600 ">笔记列表:</p>
+                <p class="mt-4 font-semibold text-lg  text-gray-600 ">笔记列表:</p>
                 <ul>
                     <li v-for="(content, index) in selectedNote.contents" :key="index"
                         class="py-2 border-b border-gray-400 relative">
@@ -31,18 +31,18 @@
                                 <span class="hidden md:inline-block">删除</span> <!-- 在大屏幕上显示删除文本 -->
                                 <span class="md:hidden">D</span> <!-- 在小屏幕上显示简略文本 -->
                             </button>
-                            <!-- 跳转按钮 -->
-                            <button :disabled="content.isDeleted" v-if="!content.isDeleted"
-                                @click="openContentInWindow(content)"
-                                class="bg-green-200 text-white px-3 py-1 rounded hover:bg-green-400 focus:outline-none">
-                                <span class="hidden md:inline-block">跳转</span> <!-- 在大屏幕上显示跳转文本 -->
-                                <span class="md:hidden">GO</span> <!-- 在小屏幕上显示简略文本 -->
+                            <!-- 公开/私密切换按钮 -->
+                            <button :disabled="content.isDeleted" v-if="!content.isDeleted" @click="toggleIsPublic(content)" :class="{
+                                'bg-gray-200 text-white px-3 py-1 rounded hover:bg-gray-400 focus:outline-none': content.isPublic === 0,
+                                'bg-green-200 text-white px-3 py-1 rounded hover:bg-green-400 focus:outline-none': content.isPublic === 1,
+                                'opacity-50 cursor-not-allowed': content.isDeleted
+                            }">
+                                {{ content.isPublic === 1 ? '公开' : '私密' }}
                             </button>
                             <span v-else>已删除</span>
                         </div>
                     </li>
                 </ul>
-                <!-- ...rest of your content... -->
             </div>
             <div v-else class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
                 Nothing
@@ -68,7 +68,7 @@
 <script setup>
 import { defineProps, ref, watch } from 'vue';
 import { showModel, showMessage } from '@/utils/message'
-import { deleteNote, editNote } from "@/api/notes"
+import { deleteNote, editNote, alterIsPublic } from "@/api/notes"
 
 const props = defineProps({
     selectedNote: Object,
@@ -153,22 +153,29 @@ const deleteContent = (content) => {
     }
 }
 
-const openContentInWindow = (content) => {
-    const nowUrl = selectedNote.value.url;
-    const targetTop = Number(content.top.replace('px', ''));
-    const targetLeft = Number(content.left.replace('px', ''));
-
-    if (!content.isDeleted && nowUrl && targetTop && targetLeft) {
-        // 打开新窗口
-        const newWindow = window.open(nowUrl, '_blank');
-
-        // 当新窗口加载完成后滚动到指定位置
-        newWindow.onload = () => {
-            newWindow.scrollTo({ top: targetTop, left: targetLeft, behavior: 'instant' });
+const toggleIsPublic = (content) => {
+    if (content && content.tempId !== undefined) {
+        const newIsPublic = content.isPublic === 1 ? 0 : 1;
+        const data = {
+            tempId: content.tempId,
+            ispublic: newIsPublic,
         };
+
+        alterIsPublic(data)
+            .then((response) => {
+                console.log('IsPublic changed:', response);
+                // 更新 UI 或执行其他操作
+                content.isPublic = newIsPublic; // 切换 isPublic 状态
+                showMessage("状态已更新");
+            })
+            .catch((error) => {
+                console.error('Failed to change isPublic:', error.message);
+                // 显示错误信息或执行其他操作
+                showMessage("状态更新失败", 'error');
+            });
     } else {
-        console.log('未能跳转');
-        console.log(nowUrl + ' ' + targetTop + ' ' + targetLeft);
+        console.error('Content or tempId is missing.');
+        // 处理缺少内容或 tempId 的情况
     }
 };
 
@@ -183,5 +190,30 @@ const openContentInWindow = (content) => {
     white-space: nowrap;
     width: 100%;
     /* 可能需要适当的宽度 */
+}
+
+li {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+li:hover {
+    background-color: #f3f4f6; /* 鼠标悬停时的背景色 */
+}
+
+
+/* 全局背景颜色设置 */
+body {
+    background-color: #fff; /* 白色背景 */
 }
 </style>

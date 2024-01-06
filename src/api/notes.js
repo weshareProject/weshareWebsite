@@ -29,3 +29,17 @@ export function deleteNote(tempId) {
     url: `/note/${tempId}`
   });
 }
+
+// 设置公开或私密
+// data  = 
+//   {
+//     "content": "string",
+//     "ispublic": Integer
+//   }
+export function alterIsPublic(data){
+  return axios({
+    method:'PUT',
+    url : '/note/',
+    data
+  })
+}

@@ -90,7 +90,7 @@ const processNotes = async (notesList) => {
     const urlMap = new Map();
 
     notesList.forEach((note) => {
-        const { url, tempId, updateTime } = note;
+        const { url, tempId, updateTime, isPublic } = note;
 
         if (urlMap.has(url)) {
             const existingNote = urlMap.get(url);
@@ -121,7 +121,12 @@ const processNotes = async (notesList) => {
             }),
             contents: contents.map((content) => ({
                 ...content,
-                tempId: notesList.find((note) => note.url === url && note.content === content.content)?.tempId || '',
+                isPublic: notesList.find(
+                    (note) => note.url === url && note.content === content.content
+                )?.isPublic || 0,
+                tempId: notesList.find(
+                    (note) => note.url === url && note.content === content.content
+                )?.tempId || '',
             })).sort((a, b) => {
                 if (a.top === b.top) {
                     return a.left - b.left;
@@ -141,12 +146,14 @@ const processNotes = async (notesList) => {
 };
 
 
+
 const getContentSummary = async (url, notesList) => {
     const contents = notesList
         .filter((note) => note.url === url)
         .map((note) => ({
             content: note.content,
             tempId: note.tempId,
+            isPublic:note.isPublic,
             updateTime: new Date(note.updateTime).toLocaleString('en-US', {
                 year: 'numeric',
                 month: '2-digit',
